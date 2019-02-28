@@ -39,7 +39,7 @@ class Repository {
 
   /// Fetches the books from the Google Books Api with the query parameter being input.
   /// If a book also exists in the local storage (eg. a book with notes/ stars) that version of the book will be used instead
-  Future<ParsedResponse<List<AppList>>> getAppLists(String input) async {
+  Future<ParsedResponse<List<AppListItem>>> getAppLists(String input) async {
     //http request, catching error like no internet connection.
     //If no internet is available for example response is
     //TODO restricted language to english, feel free to remove that
@@ -59,17 +59,17 @@ class Repository {
     // Decode and go to the items part where the necessary book information is
     List<dynamic> list = jsonDecode(response.body)['items'];
 
-    Map<String, AppList> networkAppLists = {};
+    Map<String, AppListItem> networkAppLists = {};
 
     for (dynamic jsonList in list) {
-      AppList list = parseNetworkBook(jsonList);
+      AppListItem list = parseNetworkBook(jsonList);
       networkAppLists[list.id] = list;
     }
 
     //Adds information (if available) from database
-    List<AppList> databaseAppList =
+    List<AppListItem> databaseAppList =
         await database.getAppLists([]..addAll(networkAppLists.keys));
-    for (AppList list in databaseAppList) {
+    for (AppListItem list in databaseAppList) {
       networkAppLists[list.id] = list;
     }
 
@@ -77,7 +77,7 @@ class Repository {
         response.statusCode, []..addAll(networkAppLists.values));
   }
 
-  Future<ParsedResponse<AppList>> getAppList(String id) async {
+  Future<ParsedResponse<AppListItem>> getAppList(String id) async {
     http.Response response = await http
         .get("https://www.googleapis.com/books/v1/volumes/$id")
         .catchError((resp) {});
@@ -92,12 +92,12 @@ class Repository {
 
     dynamic jsonList = jsonDecode(response.body);
 
-    AppList list = parseNetworkBook(jsonList);
+    AppListItem list = parseNetworkBook(jsonList);
 
     //Adds information (if available) from database
-    List<AppList> databaseAppList =
+    List<AppListItem> databaseAppList =
         await database.getAppLists([]..add(list.id));
-    for (AppList databaseBook in databaseAppList) {
+    for (AppListItem databaseBook in databaseAppList) {
       if (databaseBook != null) {
         list = databaseBook;
       }
@@ -107,12 +107,12 @@ class Repository {
   }
 
   //TODO optimize and add status code (Parsed Response)
-  Future<List<AppList>> getBooksById(List<String> ids) async {
-    List<AppList> lists = [];
+  Future<List<AppListItem>> getBooksById(List<String> ids) async {
+    List<AppListItem> lists = [];
 
     //  int statusCode = 200;
     for (String id in ids) {
-      ParsedResponse<AppList> list = await getAppList(id);
+      ParsedResponse<AppListItem> list = await getAppList(id);
 
       // One of the books went wrong, save status code and continue
       //   if(book.statusCode < 200 || book.statusCode >= 300) {
@@ -128,15 +128,15 @@ class Repository {
     //  return new ParsedResponse(statusCode, books);
   }
 
-  Future<List<AppList>> getBooksByIdFirstFromDatabaseAndCache(
+  Future<List<AppListItem>> getBooksByIdFirstFromDatabaseAndCache(
       List<String> ids) async {
-    List<AppList> lists = [];
+    List<AppListItem> lists = [];
     List<String> idsToFetch = ids;
 
-    List<AppList> databaseAppLists =
+    List<AppListItem> databaseAppLists =
         await database.getAppLists([]..addAll(ids));
 
-    for (AppList databaseAppList in databaseAppLists) {
+    for (AppListItem databaseAppList in databaseAppLists) {
       lists.add(databaseAppList);
       idsToFetch.remove(databaseAppList.id);
     }
@@ -155,7 +155,7 @@ class Repository {
 
       dynamic jsonList = jsonDecode(response.body);
 
-      AppList list = parseNetworkBook(jsonList);
+      AppListItem list = parseNetworkBook(jsonList);
       updateBook(list);
       lists.add(list);
     }
@@ -163,7 +163,7 @@ class Repository {
     return lists;
   }
 
-  AppList parseNetworkBook(jsonList) {
+  AppListItem parseNetworkBook(jsonList) {
     Map volumeInfo = jsonList["volumeInfo"];
     String author = "No author";
     if (volumeInfo.containsKey("authors")) {
@@ -174,7 +174,7 @@ class Repository {
       description = volumeInfo["description"];
     }
 
-    return new AppList(
+    return new AppListItem(
       title: jsonList["volumeInfo"]["title"],
       url: jsonList["volumeInfo"]["imageLinks"] != null
           ? jsonList["volumeInfo"]["imageLinks"]["smallThumbnail"]
@@ -185,7 +185,7 @@ class Repository {
     );
   }
 
-  Future updateBook(AppList book) async {
+  Future updateBook(AppListItem book) async {
     await database.updateAppList(book);
   }
 
@@ -193,7 +193,7 @@ class Repository {
     return database.close();
   }
 
-  Future<List<AppList>> getFavoriteBooks() {
+  Future<List<AppListItem>> getFavoriteBooks() {
     return database.getFavoriteAppLists();
   }
 }

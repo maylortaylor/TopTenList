@@ -39,67 +39,67 @@ class AppListsDatabase {
         onCreate: (Database db, int version) async {
       // When creating the db, create the table
       await db.execute("CREATE TABLE $tableName ("
-          "${AppList.db_id} STRING PRIMARY KEY,"
-          "${AppList.db_title} TEXT,"
-          "${AppList.db_url} TEXT,"
-          "${AppList.db_star} BIT,"
-          "${AppList.db_creator} TEXT,"
-          "${AppList.db_description} TEXT,"
+          "${AppListItem.db_id} STRING PRIMARY KEY,"
+          "${AppListItem.db_title} TEXT,"
+          "${AppListItem.db_url} TEXT,"
+          "${AppListItem.db_star} BIT,"
+          "${AppListItem.db_creator} TEXT,"
+          "${AppListItem.db_description} TEXT,"
           ")");
     });
     didInit = true;
   }
 
-  Future<int> createAppList(AppList appList) async {
+  Future<int> createAppList(AppListItem appListItem) async {
     var db = await _getDb();
     int resultId = await db.rawInsert(
-        'INSERT INTO $tableName(${AppList.db_title}, ${AppList.db_description}, ${AppList.db_url}, ${AppList.db_star}, ${AppList.db_creator} )');
+        'INSERT INTO $tableName(${AppListItem.db_title}, ${AppListItem.db_description}, ${AppListItem.db_url}, ${AppListItem.db_star}, ${AppListItem.db_creator} )');
     if (resultId >= 0) return null;
     return resultId;
   }
 
   /// Get a book by its id, if there is not entry for that ID, returns null.
-  Future<AppList> getAppList(String id) async {
+  Future<AppListItem> getAppList(String id) async {
     var db = await _getDb();
-    var result = await db
-        .rawQuery('SELECT * FROM $tableName WHERE ${AppList.db_id} = "$id"');
+    var result = await db.rawQuery(
+        'SELECT * FROM $tableName WHERE ${AppListItem.db_id} = "$id"');
     if (result.length == 0) return null;
-    return new AppList.fromMap(result[0]);
+    return new AppListItem.fromMap(result[0]);
   }
 
   /// Get all books with ids, will return a list with all the books found
-  Future<List<AppList>> getAppLists(List<String> ids) async {
+  Future<List<AppListItem>> getAppLists(List<String> ids) async {
     var db = await _getDb();
     // Building SELECT * FROM TABLE WHERE ID IN (id1, id2, ..., idn)
     var idsString = ids.map((it) => '"$it"').join(',');
     var result = await db.rawQuery(
-        'SELECT * FROM $tableName WHERE ${AppList.db_id} IN ($idsString)');
-    List<AppList> appLists = [];
+        'SELECT * FROM $tableName WHERE ${AppListItem.db_id} IN ($idsString)');
+    List<AppListItem> appLists = [];
     for (Map<String, dynamic> item in result) {
-      appLists.add(new AppList.fromMap(item));
+      appLists.add(new AppListItem.fromMap(item));
     }
     return appLists;
   }
 
-  Future<List<AppList>> getFavoriteAppLists() async {
+  Future<List<AppListItem>> getFavoriteAppLists() async {
     var db = await _getDb();
-    var result = await db
-        .rawQuery('SELECT * FROM $tableName WHERE ${AppList.db_star} = "1"');
+    var result = await db.rawQuery(
+        'SELECT * FROM $tableName WHERE ${AppListItem.db_star} = "1"');
     if (result.length == 0) return [];
-    List<AppList> appLists = [];
+    List<AppListItem> appLists = [];
     for (Map<String, dynamic> map in result) {
-      appLists.add(new AppList.fromMap(map));
+      appLists.add(new AppListItem.fromMap(map));
     }
     return appLists;
   }
 
   //TODO escape not allowed characters eg. ' " '
   /// Inserts or replaces the book.
-  Future updateAppList(AppList book) async {
+  Future updateAppList(AppListItem book) async {
     var db = await _getDb();
     await db.rawInsert(
         'INSERT OR REPLACE INTO '
-        '$tableName(${AppList.db_id}, ${AppList.db_title}, ${AppList.db_url}, ${AppList.db_star}, ${AppList.db_creator}, ${AppList.db_description})'
+        '$tableName(${AppListItem.db_id}, ${AppListItem.db_title}, ${AppListItem.db_url}, ${AppListItem.db_star}, ${AppListItem.db_creator}, ${AppListItem.db_description})'
         ' VALUES(?, ?, ?, ?, ?, ?, ?, ?)',
         [
           book.id,

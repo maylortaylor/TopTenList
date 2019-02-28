@@ -1,6 +1,6 @@
 # toptenlist
 
-A new Flutter project.
+A Flutter project to make simple Lists of things.
 
 ## Getting Started
 

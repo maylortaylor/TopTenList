@@ -1,10 +1,7 @@
 import 'dart:async';
 import 'package:sliver_fab/sliver_fab.dart';
-import 'package:toptenlist/app/components/inputField.dart';
-import 'package:toptenlist/app/components/loginButton.dart';
-import 'package:toptenlist/app/components/textButton.dart';
 import 'package:toptenlist/app/pages/list/add.dart';
-import 'package:toptenlist/theme.dart';
+import 'package:toptenlist/app/pages/list/appListWidget.dart';
 import 'package:flutter/material.dart';
 
 class HomeComponent extends StatefulWidget {
@@ -64,14 +61,15 @@ class _HomeComponentState extends State<HomeComponent>
                     ),
                   ),
                 ),
-                SliverList(
-                  delegate: SliverChildListDelegate(
-                    List.generate(
-                      30,
-                      (int index) => ListTile(title: Text("Item $index")),
-                    ),
-                  ),
-                ),
+                AppListWidget()
+                // SliverList(
+                //   delegate: SliverChildListDelegate(
+                //     List.generate(
+                //       30,
+                //       (int index) => ListTile(title: Text("Item $index")),
+                //     ),
+                //   ),
+                // ),
               ],
             ),
       ),

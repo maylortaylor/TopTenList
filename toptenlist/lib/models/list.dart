@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-class AppList {
+class AppListItem {
   static final db_id = "id";
   static final db_title = "title";
   static final db_url = "url";
@@ -11,7 +11,7 @@ class AppList {
   String title, url, id, description, creator;
   bool starred;
 
-  AppList({
+  AppListItem({
     @required this.title,
     @required this.url,
     @required this.id,
@@ -20,7 +20,7 @@ class AppList {
     this.starred = false,
   });
 
-  AppList.fromMap(Map<String, dynamic> map)
+  AppListItem.fromMap(Map<String, dynamic> map)
       : this(
           title: map[db_title],
           url: map[db_url],

@@ -6,9 +6,9 @@ import 'package:toptenlist/app/appState.dart';
 import 'package:toptenlist/models/List.dart';
 
 class OnListChangedAction {
-  final List<AppList> applists;
+  final List<AppListItem> applistItems;
 
-  OnListChangedAction(this.applists);
+  OnListChangedAction(this.applistItems);
 }
 
 class RequestItemDataEventAction {}
@@ -16,36 +16,36 @@ class RequestItemDataEventAction {}
 class CancelItemDataEventAction {}
 
 class AddItemAction {
-  final AppList applists;
+  final AppListItem applistItems;
   final VoidCallback onComplete;
   final FutureOr<dynamic> Function(dynamic error) onError;
 
   AddItemAction({
-    this.applists,
+    this.applistItems,
     this.onComplete,
     this.onError,
   });
 }
 
 class EditItemAction {
-  final AppList applists;
+  final AppListItem applistItems;
   final VoidCallback onComplete;
   final FutureOr<dynamic> Function(dynamic error) onError;
 
   EditItemAction({
-    this.applists,
+    this.applistItems,
     this.onComplete,
     this.onError,
   });
 }
 
 class RemoveItemAction {
-  final AppList applists;
+  final AppListItem applistItems;
   final VoidCallback onComplete;
   final FutureOr<dynamic> Function(dynamic error) onError;
 
   RemoveItemAction({
-    this.applists,
+    this.applistItems,
     this.onComplete,
     this.onError,
   });
@@ -66,7 +66,7 @@ final appReducer = combineReducers(<Reducer<AppState>>[
 ]);
 
 AppState onListChangeReducer(AppState state, OnListChangedAction action) {
-  return state.copyWith(appLists: action.applists);
+  return state.copyWith(applistItems: action.applistItems);
 }
 
 // AppState changeOrderByReducer(AppState state) {

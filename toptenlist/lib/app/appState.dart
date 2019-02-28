@@ -3,21 +3,21 @@ import 'package:toptenlist/models/List.dart';
 
 @immutable
 class AppState {
-  final List<AppList> appLists;
+  final List<AppListItem> applistItems;
   final bool isLoading;
 
   AppState({
-    @required this.appLists,
+    @required this.applistItems,
     @required this.isLoading,
   });
 
   AppState.initialState()
-      : appLists = <AppList>[],
+      : applistItems = <AppListItem>[],
         isLoading = false;
 
-  AppState copyWith({List<AppList> appLists, bool isLoading}) {
+  AppState copyWith({List<AppListItem> applistItems, bool isLoading}) {
     return AppState(
-      appLists: appLists ?? this.appLists,
+      applistItems: applistItems ?? this.applistItems,
       isLoading: isLoading ?? this.isLoading,
     );
   }

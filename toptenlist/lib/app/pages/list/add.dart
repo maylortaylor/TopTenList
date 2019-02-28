@@ -16,7 +16,7 @@ class _AddListComponentState extends State<AddListComponent>
     with SingleTickerProviderStateMixin {
   Animation<double> animation;
   AnimationController animController;
-  List<AppList> _appLists = [];
+  List<AppListItem> _applistItems = [];
 
   @override
   void dispose() {
@@ -52,10 +52,10 @@ class _AddListComponentState extends State<AddListComponent>
   void _addTodoItem(val) {
     print(val);
     setState(() {
-      int index = _appLists.length;
-      AppList newAppList =
-          AppList(id: '1', title: val, creator: '', description: '', url: '');
-      _appLists.add(newAppList);
+      int index = _applistItems.length;
+      AppListItem newAppListItem = AppListItem(
+          id: '1', title: val, creator: '', description: '', url: '');
+      _applistItems.add(newAppListItem);
     });
   }
 }

@@ -23,8 +23,8 @@ class AppRootWidgetState extends State<AppRootWidget> {
   Widget build(BuildContext context) {
     return new MaterialApp(
       title: 'Top Ten List',
+      debugShowCheckedModeBanner: false,
       // debugShowMaterialGrid: false,
-      // debugShowCheckedModeBanner: false,
       theme: Theme.appThemeData,
       initialRoute: '/',
       routes: {
